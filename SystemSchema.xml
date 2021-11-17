@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+    
+    <xsd:simpleType name="OCCUPIEDTYPE">
+        <xsd:union>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:integer">
+                    <xsd:enumeration value="0"/>
+                    <xsd:enumeration value="1"/> 
+                </xsd:restriction>
+                
+            </xsd:simpleType>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="free"/>
+                    <xsd:enumeration value="occupied"/> 
+                </xsd:restriction>
+                
+            </xsd:simpleType>
+            
+        </xsd:union>           
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="RETURNSTATETYPE">
+        <xsd:union>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="functional"/>
+                    <xsd:enumeration value="slightly damaged"/>
+                    <xsd:enumeration value="damaged"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:integer">
+                    <xsd:enumeration value="0"/>
+                    <xsd:enumeration value="1"/>
+                    <xsd:enumeration value="2"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:union>    
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="EMAILTYPE">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="^\w{3,20}@[a-zA-Z0-9\-]{3,15}(\.[a-zA-Z]{3,10}){1,5}$"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="TELBROJTYPE">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="^75[0-9]{1}\-[1-9]{4}$"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="ULICATYPE">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="^[a-zA-Z]\sSt\.[0-9]{1,2}$"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:complexType name="ADRESATYPE">
+        <xsd:choice>
+            <xsd:sequence>
+                <xsd:element name="Ulica" type="xsd:string"/>
+                <xsd:element name="Broj" type="xsd:integer"/>
+            </xsd:sequence>
+            <xsd:sequence>
+                <xsd:element name="UlicaFormat" type="ULICATYPE"/>
+            </xsd:sequence>
+        </xsd:choice>
+    </xsd:complexType>
+    
+    
+    <!-- Album -->
+    <xsd:complexType name="ALBUMTYPE">
+        <xsd:sequence>
+            <xsd:element name="AlbumName" type="xsd:string"/>
+            <xsd:element name="ReleaseYear" type="xsd:integer"/>
+            <xsd:element name="Price" type="xsd:float"/>
+        </xsd:sequence>
+        <xsd:attribute name="albumID" type="xsd:integer"/>
+    </xsd:complexType>
+    
+    <!-- group for Artist attributes -->    
+    <xsd:group name="ARTISTGROUPTYPE">
+        <xsd:sequence>
+            <xsd:element name="ARTIST">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="Name" type="xsd:string"/> 
+                        <xsd:element name="Country" type="xsd:string"/>
+                        <xsd:element name="Genre" minOccurs="1" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="genreName" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="Album" type="ALBUMTYPE"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="artistID" type="xsd:integer"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:group>
+    
+    
+    
+    <!-- Artist -->
+    <xsd:complexType name="ARTISTTYPE">
+        <xsd:group ref="ARTISTGROUPTYPE"/>      
+    </xsd:complexType>
+    
+    <!-- DJ -->
+    <xsd:complexType name="DJTYPE">
+        <xsd:sequence>
+            <xsd:group ref="ARTISTGROUPTYPE" />
+            <xsd:element name="StartedPefroming" type="xsd:integer" />
+            <xsd:element name="NetWorth" type="xsd:float" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="YearOfBirth" type="xsd:integer" minOccurs="0" maxOccurs="unbounded"/>           
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <!--  Group -->
+    <xsd:complexType name="GROUPTYPE">
+        <xsd:sequence>
+            <xsd:group ref="ARTISTGROUPTYPE"/>
+            <xsd:element name="YearFormed" type="xsd:integer"/>
+            <xsd:element name="NumberOfMembers" type="xsd:integer"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <!-- Singer -->
+    <xsd:complexType name="SINGERTYPE">
+        <xsd:sequence>
+            <xsd:group ref="ARTISTGROUPTYPE"/>
+            <xsd:element name="YearStarted" type="xsd:integer"  minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="YearOfBirthOrAge" type="xsd:integer"  minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <!-- RENT -->
+    <xsd:complexType name="RENTTYPE">
+        <xsd:sequence>
+            <xsd:element name="FromDate" type="xsd:date"/>
+            <xsd:element name="ReturnState" type="RETURNSTATETYPE" minOccurs="0" />
+            <xsd:element name="ReturnDate" type="xsd:date" minOccurs="0" />                       
+        </xsd:sequence>
+        <xsd:attribute name="groupID" type="xsd:integer"/>
+    </xsd:complexType>
+    
+    <!-- Client -->
+    <xsd:complexType name="CLIENTTYPE">
+        <xsd:sequence>         
+            <xsd:element name="ClientName" type="xsd:string"/>
+            <xsd:element name="MiddleName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="ClientSurname" type="xsd:string"/>
+            <xsd:element name="ClientAddress" type="ADRESATYPE" minOccurs="0" />
+            <xsd:element name="email" type="EMAILTYPE"/>            
+            <xsd:element name="Telefon" type="TELBROJTYPE" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Rent" type="RENTTYPE"/>
+        </xsd:sequence>
+        <xsd:attribute name="clientID" type="xsd:integer"/>
+    </xsd:complexType>
+    
+    <!-- CD -->
+    <xsd:complexType name="CDTYPE">
+        <xsd:sequence>
+            <xsd:element name="State" type="xsd:string"/>
+            <xsd:element name="Occupied" type="OCCUPIEDTYPE"/>    
+            <xsd:element name="Rent" type="RENTTYPE"/>
+        </xsd:sequence>
+        <xsd:attribute name="cdID" type="xsd:integer"/>
+        <xsd:attribute name="albumRef" type="xsd:IDREF"/> 
+    </xsd:complexType>
+    
+    
+    <!-- Koren -->
+    <xsd:element name="SYSTEM">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ARTISTS" type="ARTISTTYPE" minOccurs="1" maxOccurs="unbounded"/>
+                <xsd:element name="CLIENTS" type="CLIENTTYPE" minOccurs="0" maxOccurs="unbounded"/>
+                
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
